@@ -8,11 +8,17 @@ def load_pickle_file(file_path):
     return data
 
 
-def save_plot(fig, filename, folder="assets", format="pdf"):
-    if not os.path.exists(folder):
-        os.makedirs(folder)
-    
-    filepath = os.path.join(folder, f"{filename}.{format}")
-    
-    fig.savefig(filepath, format=format, bbox_inches='tight')
+def save_plot(fig, filename, filetype="fig", fmt="pdf"):
+    if filetype == "fig":
+        folder = os.path.join("assets", "figures")
+    elif filetype == "tab":
+        folder = os.path.join("assets", "tables")
+    else:
+        folder = "assets"
+
+    os.makedirs(folder, exist_ok=True)
+
+    filepath = os.path.join(folder, f"{filename}.{fmt}")
+
+    fig.savefig(filepath, format=fmt, bbox_inches='tight')
     print(f"Plot saved to {filepath}")

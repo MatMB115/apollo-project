@@ -38,7 +38,7 @@ def tsne_visualization(X, y, n_clusters=5, perplexity=30, random_state=100):
     plt.tight_layout()
     plt.show()
 
-    save_plot(fig, "tsne_visualization")
+    save_plot(fig, "tsne_visualization", "fig")
 
 def main():
     parser = argparse.ArgumentParser(
