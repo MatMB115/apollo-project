@@ -29,6 +29,12 @@ Este projeto consiste em analisar embeddings (vetores de 320 dimensões) derivad
 }
 ```
 
+## Processamento
+- ref indice gini
+
+## Visualização
+- ref tsne sklearn
+
 ## Requisitos
 -Python 3.13.2
   - Numpy
