@@ -36,6 +36,10 @@ Este projeto consiste em analisar embeddings (vetores de 320 dimensões) derivad
 - ref tsne sklearn
 - ref kmean sklearn
 
+## Classificação
+
+- sklearn top k accuracy
+
 ## Requisitos
 -Python 3.13.2
   - Numpy
