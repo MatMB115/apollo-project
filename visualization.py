@@ -1,13 +1,13 @@
-import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from utils import load_pickle_file, save_plot
-from sklearn.manifold import TSNE
 from sklearn.cluster import KMeans
+from sklearn.manifold import TSNE
 
-def tsne_visualization(X, y, n_clusters=5, perplexity=30, random_state=100): 
+from utils import load_pickle_file, load_arguments, save_plot
+
+def run_tsne_visualization(X, y, n_clusters=5, perplexity=30, random_state=100): 
     # sklearn change the name of arg n_iter to max_iter, so i use type: ignore
     tsne = TSNE(
         n_components=2,
@@ -41,25 +41,19 @@ def tsne_visualization(X, y, n_clusters=5, perplexity=30, random_state=100):
     save_plot(fig, "tsne_visualization", "fig")
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Script to visualize embeddings and apply K-Means clustering."
-    )
-    parser.add_argument(
-        "--path", 
-        type=str, 
-        default="mini_gm_public_v0.1_processed.p",
-        help=(
-            "Full path (including the .p file) where the embeddings are located. "
-            "Default path is 'mini_gm_public_v0.1_processed.p' from the current directory."
-        )
-    )
-    parser.add_argument(
-        "--n_clusters", 
-        type=int, 
-        default=10, 
-        help="Number of clusters for K-Means. Default is 10."
-    )
-    args = parser.parse_args()
+    param_dict = {
+        "path": {
+            "type": str,
+            "default": "mini_gm_public_v0.1_processed.p",
+            "help": "Full path (including the .p file) where the processed embeddings are located."
+        },
+        "n_clusters": {
+            "type": int,
+            "default": 10,
+            "help": "Number of clusters for K-Means. Default is 10."
+        }
+    }
+    args = load_arguments("Script to visualize embeddings and apply K-Means clustering.", param_dict)
 
     df_embeddings = load_pickle_file(args.path)
     print(f"Data loaded from '{args.path}'")
@@ -68,7 +62,7 @@ def main():
     X = np.vstack(df_embeddings["embedding"])
     y = df_embeddings["syndrome_id"].values
 
-    tsne_visualization(X, y, n_clusters=args.n_clusters)
+    run_tsne_visualization(X, y, n_clusters=args.n_clusters)
 
 if __name__ == "__main__":
     main()

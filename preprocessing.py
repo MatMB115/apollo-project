@@ -1,9 +1,9 @@
-import argparse
+import os
 import pickle
 import numpy as np
 import pandas as pd
-import os
-from utils import load_pickle_file
+
+from utils import load_pickle_file, save_as_pickle, load_arguments
 
 def flatten_data(data_dict):
     flattened = []
@@ -67,26 +67,18 @@ def generate_dataframe_statistics(df):
     print(f"Gini Coefficient for Images per Syndrome: {gini_images:.4f}")
     print(f"Gini Coefficient for Subjects per Syndrome: {gini_subjects:.4f}")
 
-def save_processed_data_pickle(valid_df):
-    with open("mini_gm_public_v0.1_processed.p", "wb") as f:
-        pickle.dump(valid_df, f)
-
-    print("Processed data saved as 'mini_gm_public_v0.1_processed.p'.")
-
 def main():
-    parser = argparse.ArgumentParser(
-        description="Script to preprocess a .p (pickle) embeddings file."
-    )
-    parser.add_argument(
-        "--path", 
-        type=str, 
-        default="mini_gm_public_v0.1.p",
-        help=(
-            "Full path (including the .p file) where the embeddings are located."
-            "Default path is 'mini_gm_public_v0.1.p' from the current directory."
-        )
-    )
-    args = parser.parse_args()
+    param_dict = {
+        "path": {
+            "type": str,
+            "default": "mini_gm_public_v0.1.p",
+            "help": (
+                "Full path (including the .p file) where the embeddings are located. "
+                "Default path is 'mini_gm_public_v0.1.p' from the current directory."
+            )
+        }
+    }
+    args = load_arguments("Script to preprocess a .p (pickle) embeddings file.", param_dict)
 
     if not os.path.isfile(args.path):
         print(f"File not found at: {args.path}")
@@ -114,7 +106,7 @@ def main():
         invalid_df.to_csv("invalid_records.csv", index=False)
         print("Invalid records saved to 'invalid_records.csv'.")
 
-    save_processed_data_pickle(valid_df)
+    save_as_pickle(valid_df, "mini_gm_public_v0.1_processed.p")
 
 if __name__ == "__main__":
     main()  
