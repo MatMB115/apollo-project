@@ -33,4 +33,5 @@ Este projeto consiste em analisar embeddings (vetores de 320 dimensões) derivad
 -Python 3.13.2
   - Numpy
   - Pandas
-  - 
+  - scikit-learn
+  - matplotlib
