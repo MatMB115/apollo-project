@@ -34,6 +34,7 @@ Este projeto consiste em analisar embeddings (vetores de 320 dimensões) derivad
 
 ## Visualização
 - ref tsne sklearn
+- ref kmean sklearn
 
 ## Requisitos
 -Python 3.13.2

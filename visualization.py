@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from utils import load_pickle_file
+from utils import load_pickle_file, save_plot
 from sklearn.manifold import TSNE
 from sklearn.cluster import KMeans
 
@@ -21,21 +21,24 @@ def tsne_visualization(X, y, n_clusters=5, perplexity=30, random_state=100):
     kmeans = KMeans(n_clusters=n_clusters, random_state=random_state, n_init=10)
     cluster_labels = kmeans.fit_predict(X_tsne)
 
-    plt.figure(figsize=(16, 10))
-    sns.scatterplot(x=X_tsne[:, 0], y=X_tsne[:, 1], hue=y, palette="viridis", alpha=0.7)
-    plt.title("Visualization of Embeddings via t-SNE (Colored by Syndrome ID)")
-    plt.xlabel("t-SNE Dimension 1")
-    plt.ylabel("t-SNE Dimension 2")
-    plt.legend(title="Syndrome ID", bbox_to_anchor=(1, 0.5), loc='center left')
+    fig, axes = plt.subplots(1, 2, figsize=(20, 10))
+    
+    sns.scatterplot(ax=axes[0], x=X_tsne[:, 0], y=X_tsne[:, 1], hue=y, palette="tab10", alpha=0.7)
+    axes[0].set_title("Visualization of Embeddings via t-SNE (Colored by Syndrome ID)")
+    axes[0].set_xlabel("t-SNE Dimension 1")
+    axes[0].set_ylabel("t-SNE Dimension 2")
+    axes[0].legend(title="Syndrome ID", bbox_to_anchor=(1, 0.5), loc='center left')
+    
+    sns.scatterplot(ax=axes[1], x=X_tsne[:, 0], y=X_tsne[:, 1], hue=cluster_labels, palette="tab10", alpha=0.7)
+    axes[1].set_title("K-Means Clusters on t-SNE Embeddings")
+    axes[1].set_xlabel("t-SNE Dimension 1")
+    axes[1].set_ylabel("t-SNE Dimension 2")
+    axes[1].legend(title="K-Means Cluster", bbox_to_anchor=(1, 0.5), loc='center left')
+    
+    plt.tight_layout()
     plt.show()
 
-    plt.figure(figsize=(16, 10))
-    sns.scatterplot(x=X_tsne[:, 0], y=X_tsne[:, 1], hue=cluster_labels, palette="tab10", alpha=0.7)
-    plt.title("K-Means Clusters on t-SNE Embeddings")
-    plt.xlabel("t-SNE Dimension 1")
-    plt.ylabel("t-SNE Dimension 2")
-    plt.legend(title="K-Means Cluster", bbox_to_anchor=(1, 0.5), loc='center left')
-    plt.show()
+    save_plot(fig, "tsne_visualization")
 
 def main():
     parser = argparse.ArgumentParser(
@@ -54,7 +57,7 @@ def main():
         "--n_clusters", 
         type=int, 
         default=10, 
-        help="Number of clusters for K-Means. Default is 5."
+        help="Number of clusters for K-Means. Default is 10."
     )
     args = parser.parse_args()
 
