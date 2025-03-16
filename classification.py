@@ -6,14 +6,14 @@ from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, top_k_accur
 
 from utils import load_pickle_file, load_arguments, save_as_pickle, convert_to_dataframe
 
-def run_knn(X, y, kf, distance_metric="euclidean", k_neighboors=range(1, 16), top_k_acc=2):
-    knn_results = {k: {"accuracy": [], "f1": [], "auc": [], "top_k": [], "y_true": [], "y_proba": []} for k in k_neighboors}
+def run_knn(X, y, kf, distance_metric="euclidean", k_neighbors=range(1, 16), top_k_acc=2):
+    knn_results = {k: {"accuracy": [], "f1": [], "auc": [], "top_k": [], "y_true": [], "y_proba": []} for k in k_neighbors}
 
     for train_idx, test_idx in kf.split(X): # 10-fold cross-validation
         X_train, X_test = X[train_idx], X[test_idx]
         y_train, y_test = y[train_idx], y[test_idx]
 
-        for k in k_neighboors:
+        for k in k_neighbors:
             knn = KNeighborsClassifier(n_neighbors=k, metric=distance_metric)
             knn.fit(X_train, y_train)
             

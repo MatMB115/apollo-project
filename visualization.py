@@ -7,7 +7,7 @@ from sklearn.manifold import TSNE
 
 from utils import load_pickle_file, load_arguments, save_plot
 
-def run_tsne_visualization(X, y, n_clusters=5, perplexity=30, random_state=100): 
+def run_tsne_visualization(X, y, n_clusters=5, perplexity=30, random_state=115): 
     # sklearn change the name of arg n_iter to max_iter, so i use type: ignore
     tsne = TSNE(
         n_components=2,
