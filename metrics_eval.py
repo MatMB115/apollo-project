@@ -22,6 +22,44 @@ def plot_macro_avg_roc(y_true, y_proba, classes, label):
 
     plt.plot(all_fpr, mean_tpr, label=f"{label} (Macro AUC = {auc_score:.3f})")
 
+def find_best_scores(df):
+    metrics = ["Accuracy", "F1-Score", "AUC", "Top_2"]
+    categories = {"E": {}, "C": {}}
+
+    for metric in metrics:
+        for prefix in ["E-", "C-"]:
+            col = f"{prefix}{metric}"
+            if col in df.columns:
+                best_value = df[col].max()
+                best_k = df.loc[df[col].idxmax(), "K"]
+                categories[prefix[0]][metric] = (best_k, best_value)
+
+    return categories
+
+def plot_best_scores_table(categories):
+    fig, axes = plt.subplots(1, 2, figsize=(6, 4))
+    metrics = ["Accuracy", "F1-Score", "AUC", "Top_2"]
+    headers = ["Metric", "Best K", "Best Value"]
+    
+    for idx, (key, title) in enumerate(zip(["E", "C"], ["Euclidean", "Cosine"])):
+        data = [[metric, categories[key][metric][0], f"{categories[key][metric][1]:.5f}"] 
+                for metric in metrics if metric in categories[key]]
+        
+        ax = axes[idx]
+        ax.axis("tight")
+        ax.axis("off")
+        table = ax.table(cellText=data, colLabels=headers, cellLoc="center", loc="center")
+        table.auto_set_font_size(False)
+        table.set_fontsize(10)
+        table.auto_set_column_width([0, 1, 2])
+        
+        ax.set_title(f"Best K and Metrics - {title}")
+    
+    plt.tight_layout()
+    plt.show()
+
+    save_plot(fig, "best_individual_metrics", filetype="tab", fmt="pdf")
+
 def plot_table_metrics(df_results):
     df_results = df_results.reset_index()
     df_formatted = df_results.copy()
@@ -43,9 +81,11 @@ def plot_table_metrics(df_results):
 
     plt.title("K's Overall Average Metrics - Euclidean (E) vs Cosine (C)")
 
-    save_plot(fig, "classification_metrics", filetype="tab", fmt="pdf")
+    save_plot(fig, "classification_average_metrics", filetype="tab", fmt="pdf")
 
     plt.show()
+
+    plot_best_scores_table(find_best_scores(df_results))
 
 def compute_metrics(results_dict):  
     knn_results_euclidean = results_dict["euclidean"]
@@ -56,7 +96,7 @@ def compute_metrics(results_dict):
     print("\nClassification Results Summary (Average Scores)")
     print(df_results.to_string())
 
-    dataframe_to_csv(df_results, "classification_metrics.csv")
+    dataframe_to_csv(df_results, "classification_individual_metrics.csv")
 
     best_k_euclidean = max(knn_results_euclidean.keys(), key=lambda k: np.mean(knn_results_euclidean[k]["auc"]))
     best_k_cosine = max(knn_results_cosine.keys(), key=lambda k: np.mean(knn_results_cosine[k]["auc"]))
